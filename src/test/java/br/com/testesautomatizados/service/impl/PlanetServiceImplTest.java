@@ -7,12 +7,10 @@ package br.com.testesautomatizados.service.impl;
 import static br.com.testesautomatizados.constants.PlanetConstants.PLANET;
 import static br.com.testesautomatizados.constants.PlanetConstants.INVALID_PLANET;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import br.com.testesautomatizados.entity.Planet;
 import br.com.testesautomatizados.repository.PlanetRepository;
 import br.com.testesautomatizados.utils.QueryBuilder;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,9 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Example;
 
 /**
@@ -44,7 +40,7 @@ public class PlanetServiceImplTest {
     @Mock
     private PlanetRepository planetRepository;
 
-    //operacao_estado_retorno
+    //operação_estado_retorno
     @Test
     public void createPlanet_WithValidData_ReturnsPlanet() {
         //AAA
@@ -138,13 +134,20 @@ public class PlanetServiceImplTest {
     
     @Test
     public void removePlanet_WithExistingId_DoesNotThrowAnyException() {
-        assertThatCode(() -> planetServiceImpl.delete(1L)).doesNotThrowAnyException();
+        //Arrange
+        Long planetId = 1L;
+        
+        //Act
+        planetServiceImpl.delete(planetId);
+        
+        //Assert
+        verify(planetRepository, times(1)).deleteById(planetId);
     }
     
     @Test
     public void removePlanet_WithUnexistingId_ThrowsException() {
-        doThrow(new RuntimeException()).when(planetRepository).deleteById(99L);
+        doThrow(EmptyResultDataAccessException.class).when(planetRepository).deleteById(99L);
         
-        assertThatThrownBy(() -> planetServiceImpl.delete(99L)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> planetServiceImpl.delete(99L)).isInstanceOf(EmptyResultDataAccessException.class);
     }
 }

@@ -6,6 +6,7 @@ package br.com.testesautomatizados.controller;
 
 import br.com.testesautomatizados.entity.Planet;
 import br.com.testesautomatizados.service.PlanetService;
+import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class PlanetController {
     }
     
     @PostMapping
-    public ResponseEntity<Planet> create(@RequestBody Planet planet) {
+    public ResponseEntity<Planet> create(@RequestBody @Valid Planet planet) {
         Planet planetCreated = planetService.create(planet);
         return new ResponseEntity(planetCreated, HttpStatus.CREATED);
     }
@@ -59,7 +60,7 @@ public class PlanetController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathParam("id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         planetService.delete(id);
         return ResponseEntity.noContent().build();
                 

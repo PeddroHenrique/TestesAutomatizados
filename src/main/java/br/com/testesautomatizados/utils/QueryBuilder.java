@@ -5,6 +5,7 @@
 package br.com.testesautomatizados.utils;
 
 import br.com.testesautomatizados.entity.Planet;
+import br.com.testesautomatizados.jacoco.ExcludeFromJacocoGeneratedReport;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 
@@ -13,6 +14,10 @@ import org.springframework.data.domain.ExampleMatcher;
  * @author Pedro
  */
 public class QueryBuilder {
+    private QueryBuilder() {
+        
+    }
+    
     public static Example<Planet> makeQuery(Planet planet) {
         ExampleMatcher exampleMatcher = ExampleMatcher.matchingAll().withIgnoreCase().withIgnoreNullValues();
         return Example.of(planet, exampleMatcher);
